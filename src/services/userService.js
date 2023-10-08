@@ -1,6 +1,5 @@
 const { userDao } = require("../models");
 const bcrypt = require("bcrypt");
-const { throwError } = require("../utils/throwError");
 
 const signup = async (email, password) => {
   const saltRounds = 10;
