@@ -2,7 +2,7 @@ const passport = require("passport");
 const { keyCheck } = require("../utils/keyCheck");
 const jwt = require("jsonwebtoken");
 
-const localLogin = async (req, res, next) => {
+const localLogin = async (req, res) => {
   const { email, password } = req.body;
 
   keyCheck({
