@@ -1,12 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const passport = require("passport");
 require("dotenv").config();
 const { errorHandler } = require("./src/utils/errorHandler");
 const routers = require("./src/routers");
 
 const app = express();
 
+app.use(passport.initialize());
+require("./src/config/passport");
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
