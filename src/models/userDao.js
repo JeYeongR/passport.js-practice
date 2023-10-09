@@ -44,8 +44,41 @@ const findById = async (id) => {
   return user;
 };
 
+const findBySNS = async (snsType, snsId) => {
+  const [user] = await myDataSource.query(
+    `
+    SELECT 
+      *
+    FROM 
+      users
+    WHERE 
+      sns_type = ?
+    AND
+      sns_id = ?
+    `,
+    [snsType, snsId]
+  );
+
+  return user;
+};
+
+const createUserBySNS = async (email, snsType, snsId) => {
+  return await myDataSource.query(
+    `
+    INSERT INTO users (
+      email,
+      sns_type,
+      sns_id 
+    ) VALUES (?, ?, ?)
+    `,
+    [email, snsType, snsId]
+  );
+};
+
 module.exports = {
   createUser,
   findUserByEmail,
   findById,
+  findBySNS,
+  createUserBySNS,
 };

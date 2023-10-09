@@ -1,6 +1,5 @@
 const passport = require("passport");
 const { keyCheck } = require("../utils/keyCheck");
-const jwt = require("jsonwebtoken");
 
 const localLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -10,17 +9,15 @@ const localLogin = async (req, res) => {
     password,
   });
 
-  passport.authenticate("local", { session: false }, (err, user) => {
+  passport.authenticate("local", { session: false }, (err, token) => {
     if (err) {
       console.error(err);
       return res.status(err.status).json({ message: err.message });
     }
 
-    if (!user) {
-      return res.status(401).json({ message: "Authentication failed" });
+    if (!token) {
+      return res.status(401).json({ message: "AUTHENTICATION_FAILED" });
     }
-
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
 
     res.status(200).json({
       message: "LOGIN_SUCCESS",
@@ -29,6 +26,13 @@ const localLogin = async (req, res) => {
   })({ body: { email, password } });
 };
 
+const kakaoLogin = async (req, res) => {
+  const token = req.user;
+
+  res.json({ token });
+};
+
 module.exports = {
   localLogin,
+  kakaoLogin,
 };
