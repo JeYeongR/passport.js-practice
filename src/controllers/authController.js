@@ -29,10 +29,23 @@ const localLogin = async (req, res) => {
 const kakaoLogin = async (req, res) => {
   const token = req.user;
 
-  res.json({ token });
+  res.status(200).json({
+    message: "LOGIN_SUCCESS",
+    accessToken: token,
+  });
+};
+
+const googleLogin = async (req, res) => {
+  const token = req.user;
+
+  res.status(200).json({
+    message: "LOGIN_SUCCESS",
+    accessToken: token,
+  });
 };
 
 module.exports = {
   localLogin,
   kakaoLogin,
+  googleLogin,
 };
