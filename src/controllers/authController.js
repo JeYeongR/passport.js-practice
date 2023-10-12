@@ -26,16 +26,7 @@ const localLogin = async (req, res) => {
   })({ body: { email, password } });
 };
 
-const kakaoLogin = async (req, res) => {
-  const token = req.user;
-
-  res.status(200).json({
-    message: "LOGIN_SUCCESS",
-    accessToken: token,
-  });
-};
-
-const googleLogin = async (req, res) => {
+const socialLogin = async (req, res) => {
   const token = req.user;
 
   res.status(200).json({
@@ -46,6 +37,5 @@ const googleLogin = async (req, res) => {
 
 module.exports = {
   localLogin,
-  kakaoLogin,
-  googleLogin,
+  socialLogin,
 };

@@ -2,6 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const KakaoStrategy = require("passport-kakao").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const NaverStrategy = require("passport-naver").Strategy;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { userDao } = require("../models");
@@ -35,7 +36,6 @@ const kakaoStrategyConfig = new KakaoStrategy(
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      console.log(profile);
       const existingUser = await userDao.findBySNS("KAKAO", profile.id);
 
       let id = existingUser?.id;
@@ -68,7 +68,7 @@ const googleStrategyConfig = new GoogleStrategy(
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      const existingUser = await userDao.findBySNS("KAKAO", profile.id);
+      const existingUser = await userDao.findBySNS("GOOGLE", profile.id);
 
       let id = existingUser?.id;
 
@@ -90,3 +90,34 @@ const googleStrategyConfig = new GoogleStrategy(
 );
 
 passport.use("google", googleStrategyConfig);
+
+const naverStrategyConfig = new NaverStrategy(
+  {
+    clientID: process.env.NAVER_CLIENT_ID,
+    clientSecret: process.env.NAVER_CLIENT_SECRET,
+    callbackURL: "/auth/naver/callback",
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      const existingUser = await userDao.findBySNS("NAVER", profile.id);
+
+      let id = existingUser?.id;
+
+      const email = profile.emails[0].value;
+      const snsType = "NAVER";
+      const snsId = profile.id;
+      if (!existingUser) {
+        const result = await userDao.createUserBySNS(email, snsType, snsId);
+        id = result.insertId;
+      }
+
+      const token = jwt.sign({ id }, process.env.SECRET_KEY);
+
+      return done(null, token);
+    } catch (error) {
+      return done(err);
+    }
+  }
+);
+
+passport.use("naver", naverStrategyConfig);
